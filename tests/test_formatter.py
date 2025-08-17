@@ -204,3 +204,44 @@ def test_different_timezones(normal_event_data):
     ical_event = formatter.to_ical()
     assert ical_event["dtstart"].dt.tzinfo.key == "America/New_York"
     assert ical_event["dtend"].dt.tzinfo.key == "Asia/Tokyo"
+
+
+def test_color_property(normal_event_data):
+    """Test the color property of the ICalEventFormatter."""
+    # Test with a specific label_id
+    event_data = normal_event_data.copy()
+    event_data["label_id"] = "3"  # Blue
+    
+    event = TimeTreeEvent.from_dict(event_data)
+    formatter = ICalEventFormatter(event)
+    
+    assert formatter.color == "#45B7D1"  # Blue
+    
+    # Test without label_id
+    event_data["label_id"] = None
+    event = TimeTreeEvent.from_dict(event_data)
+    formatter = ICalEventFormatter(event)
+    
+    assert formatter.color is None
+
+
+def test_to_ical_with_color(normal_event_data):
+    """Test converting a TimeTreeEvent with color to an iCal event."""
+    # Test with color
+    event_data = normal_event_data.copy()
+    event_data["label_id"] = "5"  # Yellow
+    
+    event = TimeTreeEvent.from_dict(event_data)
+    formatter = ICalEventFormatter(event)
+    ical_event = formatter.to_ical()
+    
+    assert "color" in ical_event
+    assert ical_event["color"] == "#FFEAA7"  # Yellow
+    
+    # Test without color
+    event_data["label_id"] = None
+    event = TimeTreeEvent.from_dict(event_data)
+    formatter = ICalEventFormatter(event)
+    ical_event = formatter.to_ical()
+    
+    assert "color" not in ical_event

@@ -92,6 +92,11 @@ class ICalEventFormatter:
         """Return the parent ID of the event."""
         return self.time_tree_event.parent_id
 
+    @property
+    def color(self):
+        """Return the color of the event based on TimeTree label_id."""
+        return self.time_tree_event.get_ical_color()
+
     def get_datetime(self, is_start_time):
         """Return the start or end time of the event."""
         if is_start_time:
@@ -209,6 +214,8 @@ class ICalEventFormatter:
             event.add("description", self.description)
         if self.related_to:
             event.add("related-to", self.related_to)
+        if self.color:
+            event.add("color", self.color)
 
         for alarm in self.alarms:
             event.add_component(alarm)

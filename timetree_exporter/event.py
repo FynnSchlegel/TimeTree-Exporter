@@ -29,6 +29,7 @@ class TimeTreeEvent:
         parent_id: str,
         event_type: int,
         category: int,
+        label_id: str = None,
     ):
         # pylint: disable=too-many-arguments
         # pylint: disable=too-many-locals
@@ -52,6 +53,7 @@ class TimeTreeEvent:
         self.parent_id = parent_id
         self.event_type = event_type
         self.category = category
+        self.label_id = label_id
 
     @classmethod
     def from_dict(cls, event_data: dict):
@@ -76,7 +78,39 @@ class TimeTreeEvent:
             parent_id=event_data.get("parent_id"),
             event_type=event_data.get("type"),
             category=event_data.get("category"),
+            label_id=event_data.get("label_id"),
         )
+
+    def get_ical_color(self) -> str:
+        """Get iCal color based on TimeTree label_id.
+        
+        TimeTree uses label_id 1-9 for different colors.
+        This method maps them to standard iCal color values.
+        
+        Returns:
+            str: Hex color code for iCal COLOR property, or None if no label_id
+        """
+        if self.label_id is None:
+            return None
+            
+        # TimeTree label_id to iCal color mapping
+        color_map = {
+            1: "#FF6B6B",  # Red
+            2: "#4ECDC4",  # Teal  
+            3: "#45B7D1",  # Blue
+            4: "#96CEB4",  # Green
+            5: "#FFEAA7",  # Yellow
+            6: "#DDA0DD",  # Plum
+            7: "#FFB347",  # Orange
+            8: "#98D8C8",  # Mint
+            9: "#F7DC6F",  # Light Yellow
+        }
+        
+        try:
+            label_id_int = int(self.label_id)
+            return color_map.get(label_id_int)
+        except (ValueError, TypeError):
+            return None
 
     def __str__(self):
         return self.title

@@ -93,3 +93,66 @@ def test_event_categories():
     """Test the TimeTreeEventCategory enumeration."""
     assert TimeTreeEventCategory.NORMAL == 1
     assert TimeTreeEventCategory.MEMO == 2
+
+
+def test_get_ical_color():
+    """Test the get_ical_color method."""
+    # Test with valid label_ids
+    event_data = {
+        "uuid": "test-uuid",
+        "title": "Test Event",
+        "created_at": 1234567890000,
+        "updated_at": 1234567890000,
+        "note": "",
+        "location": "",
+        "location_lat": None,
+        "location_lon": None,
+        "url": "",
+        "start_at": 1234567890000,
+        "start_timezone": "UTC",
+        "end_at": 1234567890000,
+        "end_timezone": "UTC",
+        "all_day": False,
+        "alerts": [],
+        "recurrences": [],
+        "parent_id": None,
+        "type": 0,
+        "category": 1,
+        "label_id": "1"
+    }
+    
+    event = TimeTreeEvent.from_dict(event_data)
+    assert event.get_ical_color() == "#FF6B6B"  # Red
+    
+    # Test different colors
+    test_cases = [
+        ("1", "#FF6B6B"),  # Red
+        ("2", "#4ECDC4"),  # Teal
+        ("3", "#45B7D1"),  # Blue
+        ("4", "#96CEB4"),  # Green
+        ("5", "#FFEAA7"),  # Yellow
+        ("6", "#DDA0DD"),  # Plum
+        ("7", "#FFB347"),  # Orange
+        ("8", "#98D8C8"),  # Mint
+        ("9", "#F7DC6F"),  # Light Yellow
+    ]
+    
+    for label_id, expected_color in test_cases:
+        event_data["label_id"] = label_id
+        event = TimeTreeEvent.from_dict(event_data)
+        assert event.get_ical_color() == expected_color
+    
+    # Test with None label_id
+    event_data["label_id"] = None
+    event = TimeTreeEvent.from_dict(event_data)
+    assert event.get_ical_color() is None
+    
+    # Test with invalid label_id
+    event_data["label_id"] = "10"  # Out of range
+    event = TimeTreeEvent.from_dict(event_data)
+    assert event.get_ical_color() is None
+    
+    # Test with invalid string
+    event_data["label_id"] = "invalid"
+    event = TimeTreeEvent.from_dict(event_data)
+    assert event.get_ical_color() is None
