@@ -112,6 +112,36 @@ class TimeTreeEvent:
         except (ValueError, TypeError):
             return None
 
+    def get_ical_category(self) -> str:
+        """Get iCal category name based on TimeTree label_id.
+        
+        This provides an alternative to COLOR for better calendar compatibility.
+        
+        Returns:
+            str: Category name for iCal CATEGORIES property, or None if no label_id
+        """
+        if self.label_id is None:
+            return None
+            
+        # TimeTree label_id to category name mapping
+        category_map = {
+            1: "Red",
+            2: "Teal", 
+            3: "Blue",
+            4: "Green",
+            5: "Yellow",
+            6: "Plum",
+            7: "Orange",
+            8: "Mint",
+            9: "Light Yellow",
+        }
+        
+        try:
+            label_id_int = int(self.label_id)
+            return category_map.get(label_id_int)
+        except (ValueError, TypeError):
+            return None
+
     def __str__(self):
         return self.title
 
