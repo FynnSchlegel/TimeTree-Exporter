@@ -112,12 +112,15 @@ class ICalEventFormatter:
             timezone = self.time_tree_event.end_timezone
 
         if self.time_tree_event.all_day:
-            return vDate(
-                convert_timestamp_to_datetime(
-                    time / 1000,
-                    ZoneInfo(timezone),
-                )
+            dt = convert_timestamp_to_datetime(
+                time / 1000,
+                ZoneInfo(timezone),
             )
+            # For all-day events, end date is exclusive in iCalendar (RFC 5545)
+            # So we need to add 1 day to the end date
+            if not is_start_time:
+                dt = dt + timedelta(days=1)
+            return vDate(dt)
         return vDatetime(
             convert_timestamp_to_datetime(
                 time / 1000,

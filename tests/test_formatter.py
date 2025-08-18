@@ -9,6 +9,7 @@ from icalendar.prop import vDuration
 from timetree_exporter.event import (
     TimeTreeEvent,
     TimeTreeEventType,
+    TimeTreeEventCategory,
 )
 from timetree_exporter.formatter import ICalEventFormatter
 from timetree_exporter.utils import convert_timestamp_to_datetime
@@ -245,3 +246,53 @@ def test_to_ical_with_color(normal_event_data):
     ical_event = formatter.to_ical()
     
     assert "color" not in ical_event
+
+
+def test_multi_day_all_day_event():
+    """Test that multi-day all-day events have correct end date (RFC 5545 compliant)."""
+    from datetime import datetime, timedelta
+    from zoneinfo import ZoneInfo
+    
+    # Create a 3-day all-day event (Monday to Wednesday inclusive)
+    # Start: 2023-06-12 (Monday)
+    # End should be: 2023-06-15 (Thursday) - exclusive end for all-day events
+    start_date = datetime(2023, 6, 12, 0, 0, 0, tzinfo=ZoneInfo("Europe/Berlin"))
+    end_date = datetime(2023, 6, 14, 23, 59, 59, tzinfo=ZoneInfo("Europe/Berlin"))  # Wednesday end
+    
+    event_data = {
+        "uuid": "test-uuid-multiday",
+        "title": "Mehrtägiger Termin",
+        "created_at": 1686528000000,
+        "updated_at": 1686528000000,
+        "note": "",
+        "location": "",
+        "location_lat": None,
+        "location_lon": None,
+        "url": "",
+        "start_at": int(start_date.timestamp() * 1000),
+        "start_timezone": "Europe/Berlin",
+        "end_at": int(end_date.timestamp() * 1000),
+        "end_timezone": "Europe/Berlin", 
+        "all_day": True,
+        "alerts": None,
+        "recurrences": None,
+        "parent_id": "",
+        "type": TimeTreeEventType.NORMAL,
+        "category": TimeTreeEventCategory.NORMAL,
+    }
+    
+    event = TimeTreeEvent.from_dict(event_data)
+    formatter = ICalEventFormatter(event)
+    
+    # For all-day events, dtstart should be the actual start date
+    assert formatter.dtstart.dt.date() == start_date.date()  # Monday
+    
+    # For all-day events, dtend should be the day AFTER the last day (RFC 5545)
+    # Since the event runs Mon-Wed, end should be Thursday
+    expected_end_date = (end_date + timedelta(days=1)).date()  # Thursday 
+    assert formatter.dtend.dt.date() == expected_end_date
+    
+    # Convert to iCal and verify
+    ical_event = formatter.to_ical()
+    assert ical_event["dtstart"].dt.date() == start_date.date()
+    assert ical_event["dtend"].dt.date() == expected_end_date
