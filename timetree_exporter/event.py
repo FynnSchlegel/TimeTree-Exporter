@@ -123,17 +123,17 @@ class TimeTreeEvent:
         if self.label_id is None:
             return None
             
-        # TimeTree label_id to category name mapping
+        # TimeTree label_id to CSS color name mapping
         category_map = {
-            1: "Teal",
-            2: "Grey", 
-            3: "Blue",
-            4: "Deep Orange",
-            5: "Dark Blue",
-            6: "Plum",
-            7: "Orchid",
-            8: "Orange",
-            9: "Green",
+            1: "teal",
+            2: "grey", 
+            3: "blue",
+            4: "deeporange",
+            5: "darkblue",
+            6: "plum",
+            7: "orchid",
+            8: "orange",
+            9: "green",
         }
         
         try:
