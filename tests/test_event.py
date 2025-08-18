@@ -122,19 +122,19 @@ def test_get_ical_color():
     }
     
     event = TimeTreeEvent.from_dict(event_data)
-    assert event.get_ical_color() == "#FF6B6B"  # Red
+    assert event.get_ical_color() == "#08808F"  # Teal
     
     # Test different colors
     test_cases = [
-        ("1", "#FF6B6B"),  # Red
-        ("2", "#4ECDC4"),  # Teal
-        ("3", "#45B7D1"),  # Blue
-        ("4", "#96CEB4"),  # Green
-        ("5", "#FFEAA7"),  # Yellow
-        ("6", "#DDA0DD"),  # Plum
-        ("7", "#FFB347"),  # Orange
-        ("8", "#98D8C8"),  # Mint
-        ("9", "#F7DC6F"),  # Light Yellow
+        ("1", "#08808F"),  # Teal
+        ("2", "#6C5E58"),  # Grey
+        ("3", "#1963A4"),  # Blue
+        ("4", "#AF3D19"),  # Deep Orange
+        ("5", "#2C377C"),  # Dark Blue
+        ("6", "#A62E2E"),  # Plum
+        ("7", "#681D7B"),  # Orchid
+        ("8", "#B46604"),  # Orange
+        ("9", "#5B8232"),  # Green
     ]
     
     for label_id, expected_color in test_cases:

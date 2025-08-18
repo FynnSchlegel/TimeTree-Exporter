@@ -216,7 +216,7 @@ def test_color_property(normal_event_data):
     event = TimeTreeEvent.from_dict(event_data)
     formatter = ICalEventFormatter(event)
     
-    assert formatter.color == "#45B7D1"  # Blue
+    assert formatter.color == "#1963A4"  # Blue
     
     # Test without label_id
     event_data["label_id"] = None
@@ -237,7 +237,7 @@ def test_to_ical_with_color(normal_event_data):
     ical_event = formatter.to_ical()
     
     assert "color" in ical_event
-    assert ical_event["color"] == "#FFEAA7"  # Yellow
+    assert ical_event["color"] == "#2C377C"  # Dark Blue
     
     # Test without color
     event_data["label_id"] = None
